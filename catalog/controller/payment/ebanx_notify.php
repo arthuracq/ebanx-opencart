@@ -52,11 +52,19 @@ class ControllerPaymentEbanxNotify extends Controller
 			$this->integrationKey = $this->config->get('ebanx_express_merchant_key');
 			$this->testMode = ($this->config->get('ebanx_express_mode') == 'test');
 		}
-
-		else
+		else if ($this->config->get('ebanx_merchant_key') != null)
 		{
 			$this->integrationKey = $this->config->get('ebanx_merchant_key');
 			$this->testMode = ($this->config->get('ebanx_mode') == 'test');
+		}else if ($this->config->get('ebanx_express_boleto_merchant_key') != null){
+			$this->integrationKey = $this->config->get('ebanx_express_boleto_merchant_key');
+			$this->testMode = ($this->config->get('ebanx_express_boleto_mode') == 'test');
+		}else if ($this->config->get('ebanx_express_tef_merchant_key') != null){
+			$this->integrationKey = $this->config->get('ebanx_express_tef_merchant_key');
+			$this->testMode = ($this->config->get('ebanx_express_tef_mode') == 'test');
+		}else if ($this->config->get('ebanx_express_mx_merchant_key') != null){
+			$this->integrationKey = $this->config->get('ebanx_express_mx_merchant_key');
+			$this->testMode = ($this->config->get('ebanx_express_mx_mode') == 'test');
 		}
 
 		\Ebanx\Config::set(array(
@@ -65,7 +73,7 @@ class ControllerPaymentEbanxNotify extends Controller
 		  , 'directMode'     => true
 		));
 	}
-	
+
 	/**
 	 * Save EBANX stuff to log
 	 * @param  string $text Text to log
@@ -84,7 +92,7 @@ class ControllerPaymentEbanxNotify extends Controller
 	{
 		$view = array();
 		$this->_setupEbanx();
-		
+
 		$hashes = $_REQUEST['hash_codes'];
 		$notification = $_REQUEST['notification_type'];
 
@@ -113,22 +121,38 @@ class ControllerPaymentEbanxNotify extends Controller
 
 				);
 
+				$payment_boleto = array('boleto');
+				$payment_tef = array(
+						'itau'
+					,	'bradesco'
+					,	'banrisul'
+					,	'bancodobrasil'
+				);
+
 				$type = $response->payment->payment_type_code;
 
 				if(in_array($type, $payment_type_code))
 				{
 					$order_status = 'ebanx_express_order_status_';
 				}
-				else
+				else if (in_array($type, $payment_boleto))
 				{
+					$order_status = 'ebanx_express_boleto_order_status_';
+				}else if(in_array($type, $payment_tef)) {
+					$order_status = 'ebanx_express_tef_order_status_';
+				}else{
 					$order_status = 'ebanx_order_status_';
 				}
+
 
 				$this->load->model('checkout/order');
 
 				// Update the order status according to the settings
-				$order_id = str_replace('_', '', $response->payment->merchant_payment_code);
+				// $order_id = str_replace('_', '', $response->payment->merchant_payment_code);
+				$merchant_payment_code = explode('-', $response->payment->merchant_payment_code);
 
+				$order_id = $merchant_payment_code[0];
+				
 				$status_name = $response->payment->status;
 
 				if($notification != 'update')

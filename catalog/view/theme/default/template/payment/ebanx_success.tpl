@@ -1,20 +1,30 @@
-<?php echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n"; ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="<?php echo $direction; ?>" lang="<?php echo $language; ?>" xml:lang="<?php echo $language; ?>">
-<head>
-<meta http-equiv="refresh" content="5;url=<?php echo $continue; ?>">
-<title><?php echo $title; ?></title>
-<base href="<?php echo $base; ?>" />
-</head>
-<body>
-<div style="text-align: center;">
-  <h1><?php echo $heading_title; ?></h1>
-  <p><?php echo $text_response; ?></p>
-  <div style="border: 1px solid #DDDDDD; margin-bottom: 20px; width: 350px; margin-left: auto; margin-right: auto;">
-    <WPDISPLAY ITEM=banner>
-  </div>
-  <p><?php echo $text_success; ?></p>
-  <p><?php echo $text_success_wait; ?></p>
+<?php echo $header; ?>
+<div class="container">
+  <ul class="breadcrumb">
+    <?php foreach ($breadcrumbs as $breadcrumb) { ?>
+    <li><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a></li>
+    <?php } ?>
+  </ul>
+  <div class="row"><?php echo $column_left; ?>
+    <?php if ($column_left && $column_right) { ?>
+    <?php $class = 'col-sm-6'; ?>
+    <?php } elseif ($column_left || $column_right) { ?>
+    <?php $class = 'col-sm-9'; ?>
+    <?php } else { ?>
+    <?php $class = 'col-sm-12'; ?>
+    <?php } ?>
+    <div id="content" class="<?php echo $class; ?>"><?php echo $content_top; ?>
+      <h1><?php echo $heading_title; ?></h1>
+      <?php echo $text_message; ?>
+      <?php if ($boleto_url): ?>
+         <a target="_blank" href="<?php echo $boleto_url; ?>">
+           <img src="image/ebanx/ebanx-print-boleto.png" />
+         </a>
+      <?php endif ?>
+      <div class="buttons">
+        <div class="pull-right"><a href="<?php echo $continue; ?>" class="btn btn-primary"><?php echo $button_continue; ?></a></div>
+      </div>
+      <?php echo $content_bottom; ?></div>
+    <?php echo $column_right; ?></div>
 </div>
-</body>
-</html>
+<?php echo $footer; ?>

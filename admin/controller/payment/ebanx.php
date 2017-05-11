@@ -92,7 +92,7 @@ class ControllerPaymentEbanx extends Controller
 			else
 			{
 				$this->redirect($this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL'));
-			}			
+			}
 		}
 
 		$view['heading_title'] = $this->language->get('heading_title');
@@ -300,7 +300,7 @@ class ControllerPaymentEbanx extends Controller
 		}
 
 		// Payment update URL
-		$view['ebanx_update_payments'] = HTTPS_SERVER . 'index.php?route=payment/ebanx/updatePaymentMethods&token=' . $_SESSION['token'];
+		$view['ebanx_update_payments'] = HTTPS_SERVER . 'index.php?route=payment/ebanx/updatePaymentMethods&token=' . $this->session->data['token'];
 
 		// Render either for OC1 or OC2
 		if ($this->isOpencart2())

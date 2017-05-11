@@ -69,12 +69,12 @@ class ControllerPaymentEbanx extends Controller
 		$this->load->model('checkout/order');
 		$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 
-		$this->data['button_confirm'] = $this->language->get('button_confirm');
+		$data['button_confirm'] = $this->language->get('button_confirm');
 
 		// Order total with interest
 		$interest    = $this->config->get('ebanx_installments_interest');
 		$order_total = ($order_info['total'] * (100 + floatval($interest))) / 100.0;
-		$this->data['order_total_interest'] = $order_total;
+		$data['order_total_interest'] = $order_total;
 		$currencyCode    = strtoupper($order_info['currency_code']);
 
 		switch ($currencyCode)
@@ -92,16 +92,16 @@ class ControllerPaymentEbanx extends Controller
 	    }
 
 		// Form translations
-		$this->language->load('payment/ebanx');
-		$this->data['text_wait'] 				 = $this->language->get('text_wait');
-		$this->data['entry_payment_method']      = $this->language->get('entry_payment_method');
-		$this->data['entry_dob']                 = $this->language->get('entry_dob');
-		$this->data['entry_ebanx_details']       = $this->language->get('entry_ebanx_details');
-		$this->data['entry_please_select']   	 = $this->language->get('entry_please_select');
+		$this->load->language('payment/ebanx');
+		$data['text_wait'] 				 = $this->language->get('text_wait');
+		$data['entry_payment_method']      = $this->language->get('entry_payment_method');
+		$data['entry_dob']                 = $this->language->get('entry_dob');
+		$data['entry_ebanx_details']       = $this->language->get('entry_ebanx_details');
+		$data['entry_please_select']   	 = $this->language->get('entry_please_select');
 
 		// Currency symbol and order total for display purposes
-		$this->data['order_total']   = $order_info['total'];
-		$this->data['currency_code'] = $order_info['currency_code'];
+		$data['order_total']   = $order_info['total'];
+		$data['currency_code'] = $order_info['currency_code'];
 
 		// Render normal or direct checkout page
 		$template = 'ebanx_checkout';
@@ -110,35 +110,35 @@ class ControllerPaymentEbanx extends Controller
 		$this->load->model('customer/ebanx');
   	    $info = $this->model_customer_ebanx->findByCustomerId($this->customer->getId());
 
-  	    $this->data['entry_tef_details']  = $this->language->get('entry_tef_details');
+  	    $data['entry_tef_details']  = $this->language->get('entry_tef_details');
 
-  	    $this->data['ebanx_cpf'] = '';
-		$this->data['ebanx_dob'] = '';
+  	    $data['ebanx_cpf'] = '';
+		$data['ebanx_dob'] = '';
 
   	    if ($info)
   	    {
-  		    $this->data['ebanx_cpf'] = $info['cpf'];
-  		    $this->data['ebanx_dob'] = $info['dob'];
+  		    $data['ebanx_cpf'] = $info['cpf'];
+  		    $data['ebanx_dob'] = $info['dob'];
   	    }
 
 		// Render a custom template if it's available
 		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/' . $template . '.tpl'))
 		{
-			$this->template = $this->config->get('config_template') . '/template/payment/' . $template . '.tpl';
+			$template1 = $this->config->get('config_template') . '/template/payment/' . $template . '.tpl';
 		}
 		else
 		{
-			$this->template = 'default/template/payment/' . $template . '.tpl';
+			$template1 = 'default/template/payment/' . $template . '.tpl';
 		}
 
 		if ($this->isOpencart2())
 		{
-			return $this->load->view($this->template, $this->data);
+			return $this->load->view($template1, $data);
 		}
 		else
 		{
 			$this->render();
-		}		
+		}
 	}
 
 	/**
@@ -216,7 +216,7 @@ class ControllerPaymentEbanx extends Controller
 	/**
 	 * Callback action. It's called when returning from EBANX.
 	 * @return void
-	 */ 
+	 */
 	public function callback()
 	{
 		$this->_setupEbanx();
@@ -280,7 +280,7 @@ class ControllerPaymentEbanx extends Controller
 					}
 
 					$this->redirect($this->url->link('checkout/success'));
-				}				
+				}
 			}
 			else
 			{
@@ -303,7 +303,7 @@ class ControllerPaymentEbanx extends Controller
 				else
 				{
 					$this->response->setOutput($this->render());
-				}				
+				}
 			}
 		}
 		else
@@ -326,7 +326,7 @@ class ControllerPaymentEbanx extends Controller
 			else
 			{
 				$this->response->setOutput($this->render());
-			}	
+			}
 		}
 	}
 

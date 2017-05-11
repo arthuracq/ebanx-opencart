@@ -222,7 +222,7 @@ class ControllerPaymentEbanxExpress extends Controller
 				        , 'currency_code'     => $this->config->get('config_currency')
 				        , 'amount_total'      => $order_info['total']
 				        , 'payment_type_code' => $this->request->post['ebanx']['cc_type']
-				        , 'merchant_payment_code' => $order_info['order_id']
+				        , 'merchant_payment_code' => substr($order_info['order_id'] ."-". time(), 0, 20)
 				        , 'zipcode'           => $order_info['payment_postcode']
 				        , 'address'           => $address
 				        , 'street_number'     => preg_replace('/[\D]/', '', $address)
@@ -302,7 +302,7 @@ class ControllerPaymentEbanxExpress extends Controller
 			else
 			{
 				$this->model_checkout_order->confirm($this->session->data['order_id'], $this->config->get('ebanx_express_order_status_op_id'));
-			}			
+			}
 
 			// If payment method is boleto, redirect to boleto page
 			if ($response->payment->payment_type_code == 'boleto')
@@ -410,7 +410,7 @@ class ControllerPaymentEbanxExpress extends Controller
 					}
 
 					$this->redirect($this->url->link('checkout/success'));
-				}				
+				}
 			}
 			else
 			{
@@ -433,7 +433,7 @@ class ControllerPaymentEbanxExpress extends Controller
 				else
 				{
 					$this->response->setOutput($this->render());
-				}				
+				}
 			}
 		}
 		else
@@ -456,7 +456,7 @@ class ControllerPaymentEbanxExpress extends Controller
 			else
 			{
 				$this->response->setOutput($this->render());
-			}	
+			}
 		}
 
 		// Render either for OC1 or OC2
